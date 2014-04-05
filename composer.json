@@ -1,0 +1,20 @@
+{
+    "name": "smalot/ldap",
+    "description": "",
+    "keywords": ["LDAP"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastien Malot",
+            "email": "sebastien@malot.fr"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "autoload": {
+        "psr-0": { "Smalot\\Ldap\\": "src" }
+    },
+    "target-dir": "Smalot/Ldap",
+    "minimum-stability": "stable"
+}

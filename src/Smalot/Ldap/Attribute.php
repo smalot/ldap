@@ -9,7 +9,6 @@ namespace Smalot\Ldap;
  */
 class Attribute
 {
-
     /**
      * @var string
      */
@@ -47,12 +46,24 @@ class Attribute
     }
 
     /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return implode(',', $this->values);
+    }
+
+    /**
      * @param array $values
      *
      * @return $this
      */
     public function setValues($values)
     {
+        if (!$values) {
+            $values = array();
+        }
+
         $values       = array_unique($values);
         $this->values = array_values($values);
 

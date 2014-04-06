@@ -1,11 +1,11 @@
 <?php
 
-namespace Smalot\Ldap;
+namespace Smalot\Ldap\Exception;
 
 /**
  * Class ConnectException
  *
- * @package Smalot\Ldap
+ * @package Smalot\Ldap\Exception
  */
 class ConnectException extends \Exception
 {

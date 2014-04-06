@@ -1,15 +1,16 @@
 <?php
 
-namespace Smalot\Ldap;
+namespace Smalot\Ldap\Proxy;
+
+use Smalot\Ldap\Object;
 
 /**
  * Class SearchResultProxy
  *
- * @package Smalot\Ldap
+ * @package Smalot\Ldap\Proxy
  */
 class SearchResultProxy
 {
-
     /**
      * @var resource
      */

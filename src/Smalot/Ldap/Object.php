@@ -2,6 +2,8 @@
 
 namespace Smalot\Ldap;
 
+use Smalot\Ldap\Exception\NotFoundAttributeException;
+
 /**
  * Class Object
  *
@@ -9,7 +11,6 @@ namespace Smalot\Ldap;
  */
 class Object
 {
-
     /**
      * @var string
      */
@@ -27,7 +28,22 @@ class Object
     public function __construct($dn = null, $attributes = array())
     {
         $this->distinguisedName = $dn;
-        $this->attributes       = $attributes;
+
+        foreach ($attributes as $name => $attribute) {
+            if (!$attribute instanceof Attribute) {
+                $attribute = new Attribute($name, $attribute);
+            }
+
+            $this->set($attribute);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getDistinguisedName()
+    {
+        return $this->distinguisedName;
     }
 
     /**
@@ -48,22 +64,21 @@ class Object
      *
      * @return Attribute
      *
-     * @throws NotFoundAttribute
+     * @throws NotFoundAttributeException
      */
     public function get($name, $create = true)
     {
-        if (array_key_exists($name, $this->attributes)) {
+        $name = strtolower($name);
+
+        if (isset($this->attributes[$name])) {
             return $this->attributes[$name];
         }
 
         if ($create) {
-            $attribute               = new Attribute($name);
-            $this->attributes[$name] = $attribute;
-
-            return $attribute;
-        } else {
-            return new NotFoundAttribute('Attribute not found');
+            return ($this->attributes[$name] = new Attribute($name));
         }
+
+        return new NotFoundAttributeException('Attribute not found');
     }
 
     /**
@@ -71,10 +86,9 @@ class Object
      *
      * @return $this
      */
-    public function set(Attribute $attribute)
+    public function set($attribute)
     {
-        $name                    = $attribute->getName();
-        $this->attributes[$name] = $attribute;
+        $this->attributes[strtolower($attribute->getName())] = $attribute;
 
         return $this;
     }
@@ -87,12 +101,35 @@ class Object
     public function remove($attribute)
     {
         if ($attribute instanceof Attribute) {
-            $name = $attribute->getName();
+            $name = strtolower($attribute->getName());
             unset($this->attributes[$name]);
         } else {
-            unset($this->attributes[$attribute]);
+            unset($this->attributes[strtolower($attribute)]);
         }
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEntry()
+    {
+        $entry = array();
+
+        /** @var Attribute $attribute */
+        foreach ($this->attributes as $name => $attribute) {
+            $values = $attribute->getValues();
+
+            if (count($values) > 1) {
+                foreach ($values as $value) {
+                    $entry[$name][] = $value;
+                }
+            } else {
+                $entry[$name] = $values[0];
+            }
+        }
+
+        return $entry;
     }
 }

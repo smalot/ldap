@@ -114,18 +114,18 @@ $user->get('objectClass')->add('top');
 $user->get('objectClass')->add('inetOrgPerson');
 $user->get('objectClass')->add('posixAccount');
 $user->get('displayName')->setValue('Username');
-$user->get('mail')->setValue('username@example.org');
-$user->get('cn')->setValue('Username');
-$user->get('sn')->setValue('Username');
-$user->get('givenName')->setValue('Username');
-$user->get('displayName')->setValue('Username');
-$user->get('gidNumber')->setValue(0);
-$user->get('uidNumber')->setValue(1001);
-$user->get('homeDirectory')->setValue('/home/false');
-$user->get('loginShell')->setValue('/sbin/nologin');
+$user->get('mail')->set('username@example.org');
+$user->get('cn')->set('Username');
+$user->get('sn')->set('Username');
+$user->get('givenName')->set('Username');
+$user->get('displayName')->set('Username');
+$user->get('gidNumber')->set(0);
+$user->get('uidNumber')->set(1001);
+$user->get('homeDirectory')->set('/home/false');
+$user->get('loginShell')->set('/sbin/nologin');
 
 $password = \Smalot\Ldap\Tools::generateRandomPassword();
-$user->get('userPassword')->setValue(\Smalot\Ldap\Tools::encodePassword($password));
+$user->get('userPassword')->set(\Smalot\Ldap\Tools::encodePassword($password));
 
 // ...
 
@@ -138,7 +138,7 @@ $dn    = 'cn=Group1,ou=Groups,dc=nodomain';
 $group = new \Smalot\Ldap\Object($dn);
 $group->get('objectClass')->add('top');
 $group->get('objectClass')->add('posixGroup');
-$group->get('gidNumber')->setValue(2001);
+$group->get('gidNumber')->set(2001);
 
 // Store the new group
 $repository->add($group);

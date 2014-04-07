@@ -28,7 +28,7 @@ class Tools
      */
     public static function encodePassword($password, $algo = self::PASSWORD_HASH_SSHA)
     {
-        echo 'password: ' . $password . "\n";
+//        echo 'password: ' . $password . "\n";
 
         switch ($algo) {
             case self::PASSWORD_HASH_PLAIN:

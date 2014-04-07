@@ -29,6 +29,7 @@ class Object
     {
         $this->distinguisedName = $dn;
 
+        // Supports array of array or array of Attribute objects
         foreach ($attributes as $name => $attribute) {
             if (!$attribute instanceof Attribute) {
                 $attribute = new Attribute($name, $attribute);
@@ -68,6 +69,16 @@ class Object
         unset($parts[0]);
 
         return implode(',', $parts);
+    }
+
+    /**
+     * @param $name
+     *
+     * @return bool
+     */
+    public function has($name)
+    {
+        return array_key_exists($name, $this->attributes);
     }
 
     /**
@@ -123,9 +134,13 @@ class Object
     }
 
     /**
+     * Build array as expected by ldap functions
+     *
+     * @param bool $keepEmpty
+     *
      * @return array
      */
-    public function getEntry()
+    public function getEntry($keepEmpty = true)
     {
         $entry = array();
 
@@ -135,10 +150,14 @@ class Object
 
             if (count($values) > 1) {
                 foreach ($values as $value) {
-                    $entry[$name][] = $value;
+                    if ($value != '' || $keepEmpty) {
+                        $entry[$name][] = $value;
+                    }
                 }
             } else {
-                $entry[$name] = $values[0];
+                if ($values[0] != '' || $keepEmpty) {
+                    $entry[$name] = $values[0];
+                }
             }
         }
 

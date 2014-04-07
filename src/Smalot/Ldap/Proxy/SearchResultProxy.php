@@ -33,7 +33,7 @@ class SearchResultProxy
     public function __construct($resource, $result_resource)
     {
         $this->resource        = $resource;
-        $this->result_resource = $result_resource;
+        $this->result_resource = $result_resource ? $result_resource : null;
 
         $this->reset();
     }
@@ -51,6 +51,10 @@ class SearchResultProxy
      */
     public function fetchEntry()
     {
+        if (!$this->result_resource) {
+            return null;
+        }
+
         if (null === $this->entry_resource) {
             $this->entry_resource = ldap_first_entry($this->resource, $this->result_resource);
         } else {

@@ -89,6 +89,16 @@ class Attribute
     /**
      * @param string $value
      *
+     * @return bool
+     */
+    public function has($value)
+    {
+        return (array_search($value, $this->values) !== false);
+    }
+
+    /**
+     * @param string $value
+     *
      * @return $this
      */
     public function add($value)

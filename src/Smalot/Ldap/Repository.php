@@ -40,13 +40,14 @@ class Repository
         $filter = '(objectClass=*)',
         $attributes = array(),
         $attrsonly = 0,
-        $sizelimit = 0,
+        $sizelimit = 1000,
         $timelimit = 0,
         $deref = LDAP_DEREF_NEVER
     ) {
+        // Call function by this way to keep default arguments
         $args = func_get_args();
         array_unshift($args, $this->server->getResource());
-        $results = call_user_func_array('ldap_search', $args);
+        $results = @call_user_func_array('ldap_search', $args);
 
         return new SearchResultProxy($this->server->getResource(), $results);
     }
@@ -78,10 +79,11 @@ class Repository
         unset($parts['count']);
 
         // Doesn't support anything else than 'ou'
-        if (stripos($parts[0], 'ou=') === false) {
+        if (stripos($parts[0], 'ou=') !== 0) {
             return false;
         }
 
+        // Previously create parents
         if ($createParent) {
             $parentParts = $parts;
             unset($parentParts[0]);
@@ -94,6 +96,7 @@ class Repository
             }
         }
 
+        // Already exists ?
         $found = $this->searchDN($dn);
 
         if (!$found) {
@@ -129,15 +132,11 @@ class Repository
             }
         }
 
-        if (!ldap_add($this->server->getResource(), $dn, $object->getEntry()) && $throwsExceptionIfExists) {
-            echo $dn . "\n";
-//            var_dump($object->getEntry());
+        if (!@ldap_add($this->server->getResource(), $dn, $object->getEntry()) && $throwsExceptionIfExists) {
             throw new \Exception('Unable to save specified DN: ' . ldap_error(
                     $this->server->getResource()
                 ) . ' (' . $dn . ')');
         }
-
-        echo 'correctly added: ' . $dn . "\n";
 
         return true;
     }
@@ -153,7 +152,13 @@ class Repository
     {
         switch ($action) {
             case 'add':
-                ldap_mod_add($this->server->getResource(), $object->getDistinguisedName(), $entry);
+                @ldap_mod_add($this->server->getResource(), $object->getDistinguisedName(), $entry);
+                break;
+            case 'del':
+                @ldap_mod_del($this->server->getResource(), $object->getDistinguisedName(), $entry);
+                break;
+            case 'replace':
+                @ldap_mod_replace($this->server->getResource(), $object->getDistinguisedName(), $entry);
                 break;
         }
 
@@ -171,8 +176,6 @@ class Repository
         if (!ldap_delete($this->server->getResource(), $dn)) {
             throw new \Exception('Unable to delete specified DN: ' . ldap_error($this->server->getResource()));
         }
-
-        echo 'correctly removed: ' . $dn . "\n";
 
         return true;
     }

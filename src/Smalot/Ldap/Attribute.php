@@ -38,7 +38,7 @@ class Attribute
     public function __construct($name, $values = array())
     {
         $this->name = $name;
-        $this->setValues($values);
+        $this->set($values);
     }
 
     /**
@@ -64,38 +64,32 @@ class Attribute
      */
     public function getValue($default = '')
     {
-        if ($value = implode(',', $this->values)) {
-            return $value;
+        if (count($this->values)) {
+            return implode(',', $this->values);
         } else {
             return $default;
         }
     }
 
     /**
-     * @param array $values
+     * @param mixed $values
      *
      * @return $this
      */
-    public function setValues($values)
+    public function set($values)
     {
-        if (!$values) {
-            $values = array();
+        if (!is_array($values)) {
+            if (null !== $values) {
+                $values = array($values);
+            } else {
+                $values = array();
+            }
         }
 
         $values       = array_unique($values);
         $this->values = array_values($values);
 
         return $this;
-    }
-
-    /**
-     * @param string $value
-     *
-     * @return $this
-     */
-    public function setValue($value)
-    {
-        return $this->setValues(array($value));
     }
 
     /**
@@ -118,7 +112,7 @@ class Attribute
         $values   = $this->values;
         $values[] = $value;
 
-        $this->setValues($values);
+        $this->set($values);
 
         return $this;
     }

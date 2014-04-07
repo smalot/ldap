@@ -162,7 +162,7 @@ class Ldif
             $attributes = $actions[0]['add'];
             $object     = new Object($dn, $attributes);
 
-            return $this->repository->save($object);
+            return $this->repository->add($object);
         }
 
         // Others are not currently supported

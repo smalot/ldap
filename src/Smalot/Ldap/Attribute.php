@@ -46,11 +46,17 @@ class Attribute
     }
 
     /**
+     * @param string $default
+     *
      * @return string
      */
-    public function getValue()
+    public function getValue($default = '')
     {
-        return implode(',', $this->values);
+        if ($value = implode(',', $this->values)) {
+            return $value;
+        } else {
+            return $default;
+        }
     }
 
     /**

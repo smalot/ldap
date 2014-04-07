@@ -67,16 +67,112 @@ class Repository
     }
 
     /**
-     * @param Object $object
+     * @param string $dn
+     * @param bool   $createParent
      *
      * @return bool
      */
-    public function save(Object $object)
+    public function createOrganizationalUnit($dn, $createParent = false)
     {
-        var_dump($object->getDistinguisedName(), $object->getEntry());
-        ldap_add($this->server->getResource(), $object->getDistinguisedName(), $object->getEntry());
+        $parts = ldap_explode_dn($dn, 0);
+        unset($parts['count']);
 
-        var_dump(ldap_error($this->server->getResource()));
+        // Doesn't support anything else than 'ou'
+        if (stripos($parts[0], 'ou=') === false) {
+            return false;
+        }
+
+        if ($createParent) {
+            $parentParts = $parts;
+            unset($parentParts[0]);
+
+            $parent = implode(',', $parentParts);
+            $found  = $this->searchDN($parent);
+
+            if (!$found) {
+                $this->createOrganizationalUnit($parent, true);
+            }
+        }
+
+        $found = $this->searchDN($dn);
+
+        if (!$found) {
+            list(, $name) = explode('=', $parts[0]);
+
+            $object = new Object($dn);
+            $object->get('objectClass')->add('top');
+            $object->get('objectClass')->add('organizationalUnit');
+            $object->get('ou')->add($name);
+
+            return $this->add($object, false);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Object $object
+     * @param bool   $deleteBeforeIfExists
+     * @param bool   $throwsExceptionIfExists
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    public function add(Object $object, $deleteBeforeIfExists = false, $throwsExceptionIfExists = true)
+    {
+        $dn    = $object->getDistinguisedName();
+        $found = $this->searchDN($dn);
+
+        if ($found && $deleteBeforeIfExists) {
+            if (strcasecmp($found->getDistinguisedName(), $dn) === 0) {
+                $this->remove($dn);
+            }
+        }
+
+        if (!ldap_add($this->server->getResource(), $dn, $object->getEntry()) && $throwsExceptionIfExists) {
+            echo $dn . "\n";
+//            var_dump($object->getEntry());
+            throw new \Exception('Unable to save specified DN: ' . ldap_error(
+                    $this->server->getResource()
+                ) . ' (' . $dn . ')');
+        }
+
+        echo 'correctly added: ' . $dn . "\n";
+
+        return true;
+    }
+
+    /**
+     * @param Object $object
+     * @param string $action
+     * @param array  $entry
+     *
+     * @return bool
+     */
+    public function modify(Object $object, $action, $entry)
+    {
+        switch ($action) {
+            case 'add':
+                ldap_mod_add($this->server->getResource(), $object->getDistinguisedName(), $entry);
+                break;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $dn
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    public function remove($dn)
+    {
+        if (!ldap_delete($this->server->getResource(), $dn)) {
+            throw new \Exception('Unable to delete specified DN: ' . ldap_error($this->server->getResource()));
+        }
+
+        echo 'correctly removed: ' . $dn . "\n";
 
         return true;
     }

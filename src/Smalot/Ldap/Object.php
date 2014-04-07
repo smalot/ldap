@@ -59,6 +59,18 @@ class Object
     }
 
     /**
+     * @return string
+     */
+    public function getParentDN()
+    {
+        $parts = ldap_explode_dn($this->distinguisedName, 0);
+        unset($parts['count']);
+        unset($parts[0]);
+
+        return implode(',', $parts);
+    }
+
+    /**
      * @param string $name
      * @param bool   $create
      *

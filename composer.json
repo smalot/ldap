@@ -1,7 +1,7 @@
 {
     "name": "smalot/ldap",
     "description": "PHP library to handle LDAP data. Can parse LDIF file.",
-    "keywords": ["LDAP", "LIDF", "OpenLDAP"],
+    "keywords": ["LDAP", "LDIF", "OpenLDAP"],
     "license": "MIT",
     "authors": [
         {

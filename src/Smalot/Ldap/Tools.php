@@ -54,6 +54,8 @@ class Tools
     }
 
     /**
+     * source: http://wp.me/pyhuE-47
+     *
      * @param string $password
      * @param string $passwordEncoded
      *

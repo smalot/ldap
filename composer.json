@@ -1,12 +1,14 @@
 {
     "name": "smalot/ldap",
-    "description": "PHP library to handle LDAP data. Can parse LDIF file.",
+    "description": "PHP library which handle LDAP data. Can parse too LDIF file.",
     "keywords": ["LDAP", "LDIF", "OpenLDAP"],
     "license": "MIT",
     "authors": [
         {
-            "name": "Sebastien Malot",
-            "email": "sebastien@malot.fr"
+            "name": "Sebastien MALOT",
+            "email": "sebastien@malot.fr",
+            "role": "Developer",
+            "homepage": "http://www.malot.fr"
         }
     ],
     "require": {
@@ -15,6 +17,5 @@
     "autoload": {
         "psr-0": { "Smalot\\Ldap\\": "src" }
     },
-    "target-dir": "Smalot/Ldap",
     "minimum-stability": "stable"
 }

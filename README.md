@@ -9,7 +9,7 @@ You need at least PHP 5.3.3 and LDAP php module enabled.
 
 ## Installation
 
-### Download LDAP using composer
+### Download project using composer
 
 Add LDAP in your composer.json:
 

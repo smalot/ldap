@@ -39,7 +39,10 @@ class Attribute
     {
         $this->name = $name;
 
-        if (!is_array($values)) {
+        if (is_null($values)) {
+            $values = array();
+        }
+        elseif (!is_array($values)) {
             $values = array($values);
         }
 

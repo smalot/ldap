@@ -35,10 +35,15 @@ class Attribute
      * @param string $name
      * @param mixed  $values
      */
-    public function __construct($name, $values = array())
+    public function __construct($name, $values = null)
     {
         $this->name = $name;
-        $this->set($values);
+
+        if (!is_array($values)) {
+            $values = array($values);
+        }
+
+        $this->setValues($values);
     }
 
     /**
@@ -64,32 +69,38 @@ class Attribute
      */
     public function getValue($default = '')
     {
-        if (count($this->values)) {
-            return implode(',', $this->values);
+        if ($value = implode(',', $this->values)) {
+            return $value;
         } else {
             return $default;
         }
     }
 
     /**
-     * @param mixed $values
+     * @param array $values
      *
      * @return $this
      */
-    public function set($values)
+    public function setValues($values)
     {
-        if (!is_array($values)) {
-            if (null !== $values) {
-                $values = array($values);
-            } else {
-                $values = array();
-            }
+        if (!$values) {
+            $values = array();
         }
 
         $values       = array_unique($values);
         $this->values = array_values($values);
 
         return $this;
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        return $this->setValues(array($value));
     }
 
     /**
@@ -112,7 +123,7 @@ class Attribute
         $values   = $this->values;
         $values[] = $value;
 
-        $this->set($values);
+        $this->setValues($values);
 
         return $this;
     }

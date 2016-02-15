@@ -59,7 +59,7 @@ class SearchResultProxy
     }
 
     /**
-     * @return mixed resource
+     * @return Object|null resource
      */
     public function fetchEntry()
     {

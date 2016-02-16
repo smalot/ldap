@@ -135,11 +135,11 @@ class Repository
      */
     public function add(Object $object, $deleteBeforeIfExists = false, $throwsExceptionIfExists = true)
     {
-        $dn    = $object->getDistinguisedName();
+        $dn    = $object->getDistinguishedName();
         $found = $this->searchDN($dn);
 
         if ($found && $deleteBeforeIfExists) {
-            if (strcasecmp($found->getDistinguisedName(), $dn) === 0) {
+            if (strcasecmp($found->getDistinguishedName(), $dn) === 0) {
                 $this->remove($dn);
             }
         }
@@ -164,13 +164,13 @@ class Repository
     {
         switch ($action) {
             case 'add':
-                @ldap_mod_add($this->server->getResource(), $object->getDistinguisedName(), $entry);
+                @ldap_mod_add($this->server->getResource(), $object->getDistinguishedName(), $entry);
                 break;
             case 'del':
-                @ldap_mod_del($this->server->getResource(), $object->getDistinguisedName(), $entry);
+                @ldap_mod_del($this->server->getResource(), $object->getDistinguishedName(), $entry);
                 break;
             case 'replace':
-                @ldap_mod_replace($this->server->getResource(), $object->getDistinguisedName(), $entry);
+                @ldap_mod_replace($this->server->getResource(), $object->getDistinguishedName(), $entry);
                 break;
         }
 

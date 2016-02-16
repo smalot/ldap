@@ -26,7 +26,7 @@ class Object
     /**
      * @var string
      */
-    protected $distinguisedName;
+    protected $distinguishedName;
 
     /**
      * @var array
@@ -39,7 +39,7 @@ class Object
      */
     public function __construct($dn = null, $attributes = array())
     {
-        $this->distinguisedName = $dn;
+        $this->distinguishedName = $dn;
 
         // Supports array of array or array of Attribute objects
         foreach ($attributes as $name => $attribute) {
@@ -54,9 +54,9 @@ class Object
     /**
      * @return string
      */
-    public function getDistinguisedName()
+    public function getDistinguishedName()
     {
-        return $this->distinguisedName;
+        return $this->distinguishedName;
     }
 
     /**
@@ -64,9 +64,9 @@ class Object
      *
      * @return $this
      */
-    public function setDistinguisedName($dn)
+    public function setDistinguishedName($dn)
     {
-        $this->distinguisedName = $dn;
+        $this->distinguishedName = $dn;
 
         return $this;
     }
@@ -76,7 +76,7 @@ class Object
      */
     public function getParentDN()
     {
-        $parts = ldap_explode_dn($this->distinguisedName, 0);
+        $parts = ldap_explode_dn($this->distinguishedName, 0);
         unset($parts['count']);
         unset($parts[0]);
 

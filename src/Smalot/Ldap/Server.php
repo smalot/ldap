@@ -118,7 +118,7 @@ class Server
      */
     public function bind($rdn = null, $password = null)
     {
-        if (!ldap_bind($this->resource, $rdn, $password)) {
+        if (!@ldap_bind($this->resource, $rdn, $password)) {
             throw new BindingException('Can\'t bind server');
         }
 

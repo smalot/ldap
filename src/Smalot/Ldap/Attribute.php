@@ -35,7 +35,7 @@ class Attribute
      * @param string $name
      * @param mixed  $values
      */
-    public function __construct($name, $values = null)
+    public function __construct($name, $values = array())
     {
         $this->name = $name;
 

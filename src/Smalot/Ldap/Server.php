@@ -110,6 +110,22 @@ class Server
     }
 
     /**
+     * @return bool
+     */
+    public function ping()
+    {
+        $errno = $errstr = null;
+
+        if ($op = @fsockopen($this->hostname, $this->port, $errno, $errstr, 2)) {
+            fclose($op);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * @param string $rdn
      * @param string $password
      *
@@ -118,8 +134,12 @@ class Server
      */
     public function bind($rdn = null, $password = null)
     {
+        if (!$this->ping()) {
+            throw new BindingException("Can't bind server");
+        }
+
         if (!@ldap_bind($this->resource, $rdn, $password)) {
-            throw new BindingException('Can\'t bind server');
+            throw new BindingException("Can't bind server");
         }
 
         return true;
